@@ -1,0 +1,70 @@
+name: Build and publish all Docker images
+on:
+  release:
+    types: [published]
+
+concurrency:
+  group: release-images-${{ github.event.release.tag_name }}
+  cancel-in-progress: false
+
+jobs:
+  validate-calver:
+    name: Validate CalVer tag
+    runs-on: ubuntu-latest
+    steps:
+      - name: Validate release tag format
+        run: |
+          echo "${{ github.event.release.tag_name }}" | grep -Eq "^[0-9]{4}\.(0?[1-9]|1[0-2])\.[0-9]+$" || (echo "❌ Invalid CalVer tag. Expected format: YYYY.M.PATCH or YYYY.MM.PATCH (e.g. 2026.3.1 or 2026.03.1)" && exit 1)
+
+  build-and-push:
+    name: Build and publish ${{ matrix.image_name }}
+    needs: validate-calver
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - image_name: video-touch-api
+            context: ./server/api
+            dockerfile: ./server/api/Dockerfile
+          - image_name: video-touch-web
+            context: ./frontend
+            dockerfile: ./frontend/Dockerfile
+          - image_name: audio-worker
+            context: ./server/workers/audio-worker
+            dockerfile: ./server/workers/audio-worker/Dockerfile
+          - image_name: download-video-worker
+            context: ./server/workers/download-video-worker
+            dockerfile: ./server/workers/download-video-worker/Dockerfile
+          - image_name: process-video-worker
+            context: ./server/workers/process-video-worker
+            dockerfile: ./server/workers/process-video-worker/Dockerfile
+          - image_name: thumbnail-generation-worker
+            context: ./server/workers/thumbnail-generation-worker
+            dockerfile: ./server/workers/thumbnail-generation-worker/Dockerfile
+          - image_name: upload-video-worker
+            context: ./server/workers/upload-video-worker
+            dockerfile: ./server/workers/upload-video-worker/Dockerfile
+          - image_name: validate-video-worker
+            context: ./server/workers/validate-video-worker
+            dockerfile: ./server/workers/validate-video-worker/Dockerfile
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Login to docker hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Build and push to registry
+        uses: docker/build-push-action@v5
+        with:
+          context: ${{ matrix.context }}
+          file: ${{ matrix.dockerfile }}
+          push: true
+          tags: |
+            ${{ secrets.DOCKER_USERNAME }}/${{ matrix.image_name }}:latest
+            ${{ secrets.DOCKER_USERNAME }}/${{ matrix.image_name }}:${{ github.event.release.tag_name }}
+
