@@ -1,0 +1,179 @@
+version: "3.7"
+
+services:
+  video-touch-web:
+    image: vdiotouch/video-touch-web:latest
+    container_name: video-touch-web
+    env_file:
+      - .env
+    ports:
+      - "${WEB_PORT:-3009}:3000"
+    restart: always
+    depends_on:
+      - video-touch-api
+    networks:
+      - video-touch-net
+
+  video-touch-api:
+    image: vdiotouch/video-touch-api:latest
+    container_name: video-touch-api
+    env_file:
+      - .env
+    environment:
+      - PORT=${API_PORT}
+    ports:
+      - "${API_PORT}:${API_PORT}"
+    volumes:
+      - ./server/temp_videos:${TEMP_VIDEO_DIRECTORY}
+      - ./server/uploads:${TEMP_UPLOAD_DIRECTORY}
+    restart: always
+    networks:
+      - video-touch-net
+
+  download-video-worker:
+    image: vdiotouch/download-video-worker:latest
+    container_name: download-video-worker
+    env_file:
+      - .env
+    environment:
+      - DOWNLOAD_VIDEO_WORKER_PORT=${DOWNLOAD_VIDEO_WORKER_PORT}
+    volumes:
+      - ./server/temp_videos:${TEMP_VIDEO_DIRECTORY}
+    restart: always
+    depends_on:
+      - video-touch-api
+    networks:
+      - video-touch-net
+
+  validate-video-worker:
+    image: vdiotouch/validate-video-worker:latest
+    container_name: validate-video-worker
+    env_file:
+      - .env
+    environment:
+      - VALIDATE_VIDEO_WORKER_PORT=${VALIDATE_VIDEO_WORKER_PORT}
+    volumes:
+      - ./server/temp_videos:${TEMP_VIDEO_DIRECTORY}
+    restart: always
+    depends_on:
+      - video-touch-api
+    networks:
+      - video-touch-net
+
+  thumbnail-generation-worker:
+    image: vdiotouch/thumbnail-generation-worker:latest
+    container_name: thumbnail-generation-worker
+    env_file:
+      - .env
+    environment:
+      - THUMBNAIL_WORKER_PORT=${THUMBNAIL_WORKER_PORT}
+    volumes:
+      - ./server/temp_videos:${TEMP_VIDEO_DIRECTORY}
+    restart: always
+    depends_on:
+      - video-touch-api
+    networks:
+      - video-touch-net
+
+  process-video-worker-360p:
+    image: vdiotouch/process-video-worker:latest
+    container_name: process-video-worker-360p
+    env_file:
+      - .env
+    environment:
+      - PROCESS_VIDEO_WORKER_PORT=${PROCESS_VIDEO_WORKER_PORT}
+      - BULL_PROCESS_VIDEO_JOB_QUEUE=${BULL_360P_PROCESS_VIDEO_JOB_QUEUE}
+    volumes:
+      - ./server/temp_videos:${TEMP_VIDEO_DIRECTORY}
+    cpuset: "${CPUSET_PROCESS_360P:?CPUSET_PROCESS_360P is required}"
+    restart: always
+    depends_on:
+      - video-touch-api
+    networks:
+      - video-touch-net
+
+  process-video-worker-480p:
+    image: vdiotouch/process-video-worker:latest
+    container_name: process-video-worker-480p
+    env_file:
+      - .env
+    environment:
+      - PROCESS_VIDEO_WORKER_PORT=${PROCESS_VIDEO_WORKER_PORT}
+      - BULL_PROCESS_VIDEO_JOB_QUEUE=${BULL_480P_PROCESS_VIDEO_JOB_QUEUE}
+    volumes:
+      - ./server/temp_videos:${TEMP_VIDEO_DIRECTORY}
+    cpuset: "${CPUSET_PROCESS_480P:?CPUSET_PROCESS_480P is required}"
+    restart: always
+    depends_on:
+      - video-touch-api
+    networks:
+      - video-touch-net
+
+  process-video-worker-720p:
+    image: vdiotouch/process-video-worker:latest
+    container_name: process-video-worker-720p
+    env_file:
+      - .env
+    environment:
+      - PROCESS_VIDEO_WORKER_PORT=${PROCESS_VIDEO_WORKER_PORT}
+      - BULL_PROCESS_VIDEO_JOB_QUEUE=${BULL_720P_PROCESS_VIDEO_JOB_QUEUE}
+    volumes:
+      - ./server/temp_videos:${TEMP_VIDEO_DIRECTORY}
+    cpuset: "${CPUSET_PROCESS_720P:?CPUSET_PROCESS_720P is required}"
+    restart: always
+    depends_on:
+      - video-touch-api
+    networks:
+      - video-touch-net
+
+  process-video-worker-1080p:
+    image: vdiotouch/process-video-worker:latest
+    container_name: process-video-worker-1080p
+    env_file:
+      - .env
+    environment:
+      - PROCESS_VIDEO_WORKER_PORT=${PROCESS_VIDEO_WORKER_PORT}
+      - BULL_PROCESS_VIDEO_JOB_QUEUE=${BULL_1080P_PROCESS_VIDEO_JOB_QUEUE}
+    volumes:
+      - ./server/temp_videos:${TEMP_VIDEO_DIRECTORY}
+    cpuset: "${CPUSET_PROCESS_1080P:?CPUSET_PROCESS_1080P is required}"
+    restart: always
+    depends_on:
+      - video-touch-api
+    networks:
+      - video-touch-net
+
+  audio-worker:
+    image: vdiotouch/audio-worker:latest
+    container_name: audio-worker
+    env_file:
+      - .env
+    environment:
+      - AUDIO_WORKER_PORT=${AUDIO_WORKER_PORT}
+    volumes:
+      - ./server/temp_videos:${TEMP_VIDEO_DIRECTORY}
+    cpuset: "${CPUSET_AUDIO_WORKER:?CPUSET_AUDIO_WORKER is required}"
+    restart: always
+    depends_on:
+      - video-touch-api
+    networks:
+      - video-touch-net
+
+  upload-video-worker:
+    image: vdiotouch/upload-video-worker:latest
+    container_name: upload-video-worker
+    env_file:
+      - .env
+    environment:
+      - UPLOAD_VIDEO_WORKER_PORT=${UPLOAD_VIDEO_WORKER_PORT}
+    volumes:
+      - ./server/temp_videos:${TEMP_VIDEO_DIRECTORY}
+    restart: always
+    depends_on:
+      - video-touch-api
+    networks:
+      - video-touch-net
+
+networks:
+  video-touch-net:
+    name: video-touch-net
