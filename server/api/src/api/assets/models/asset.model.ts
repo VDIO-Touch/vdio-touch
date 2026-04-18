@@ -25,6 +25,9 @@ export class CreateAssetResponse {
 
   @Field(() => [String])
   tags: string[];
+
+  @Field(() => GraphQLJSON, { nullable: true })
+  meta: Record<string, any>;
 }
 
 @ObjectType()
@@ -96,6 +99,11 @@ export class Asset {
   @Expose()
   @Transform((value) => value.obj.with_transcoding ?? false)
   with_transcoding: boolean;
+
+  @Field(() => GraphQLJSON, { nullable: true })
+  @Expose()
+  @Transform((value) => value.obj.meta ?? null)
+  meta: Record<string, any>;
 }
 
 @ObjectType()

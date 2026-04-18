@@ -1,5 +1,6 @@
 import { Field, InputType } from '@nestjs/graphql';
-import { IsArray, IsBoolean, IsEmail, IsNotEmpty, IsOptional, IsString, IsUrl } from 'class-validator';
+import { IsArray, IsBoolean, IsEmail, IsNotEmpty, IsObject, IsOptional, IsString, IsUrl } from 'class-validator';
+import GraphQLJSON from 'graphql-type-json';
 
 @InputType()
 export class RecreateAssetInputDto {
@@ -52,6 +53,11 @@ export class CreateAssetInputDto {
   @IsOptional()
   @IsEmail()
   email?: string;
+
+  @Field(() => GraphQLJSON, { nullable: true })
+  @IsObject()
+  @IsOptional()
+  meta?: Record<string, any>;
 }
 
 @InputType()
@@ -75,4 +81,9 @@ export class CreateAssetFromUploadInputDto {
   @IsArray()
   @IsOptional()
   tags?: string[];
+
+  @Field(() => GraphQLJSON, { nullable: true })
+  @IsObject()
+  @IsOptional()
+  meta?: Record<string, any>;
 }

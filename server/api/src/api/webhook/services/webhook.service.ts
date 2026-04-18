@@ -72,6 +72,7 @@ export class WebhookService {
           created_at: updatedAsset.createdAt.toISOString(),
           updated_at: updatedAsset.updatedAt.toISOString(),
           status: updatedAsset.latest_status,
+          meta: updatedAsset.meta ?? null,
         },
       };
 
