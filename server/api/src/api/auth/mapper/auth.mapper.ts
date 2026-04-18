@@ -15,7 +15,7 @@ export class AuthMapper {
       {
         excludeExtraneousValues: true,
         enableImplicitConversion: true,
-      }
+      },
     );
   }
 }

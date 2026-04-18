@@ -24,7 +24,7 @@ export class FileService {
     private jobManagerService: JobManagerService,
     private webhookService: WebhookService,
     private transcriptService: TranscriptService,
-    private cdnService: CdnService
+    private cdnService: CdnService,
   ) {}
 
   async updateFileStatus(fileId: string, status: string, details: string, size?: number) {
@@ -55,7 +55,7 @@ export class FileService {
       {
         _id: mongoose.Types.ObjectId(fileId),
       },
-      updatedData
+      updatedData,
     );
   }
 
@@ -176,7 +176,7 @@ export class FileService {
     let downloadTypeFile = await this.getFileByType(
       updatedFile.asset_id.toString(),
       Constants.FILE_TYPE.DOWNLOAD,
-      Constants.FILE_STATUS.QUEUED
+      Constants.FILE_STATUS.QUEUED,
     );
     if (!downloadTypeFile) {
       console.log('No download type file found, skipping download file generation');
@@ -200,7 +200,7 @@ export class FileService {
         },
         {
           job_id: jobData.id,
-        }
+        },
       );
     }
   }
@@ -219,7 +219,7 @@ export class FileService {
             },
             {
               job_id: jobData.id,
-            }
+            },
           );
         }
       }
@@ -233,7 +233,7 @@ export class FileService {
             },
             {
               job_id: jobData.id,
-            }
+            },
           );
         }
       }
@@ -248,7 +248,7 @@ export class FileService {
             },
             {
               job_id: jobData.id,
-            }
+            },
           );
         }
       }
@@ -263,7 +263,7 @@ export class FileService {
             },
             {
               job_id: jobData.id,
-            }
+            },
           );
         }
       }
@@ -278,7 +278,7 @@ export class FileService {
             },
             {
               job_id: jobData.id,
-            }
+            },
           );
         }
       }
@@ -299,7 +299,7 @@ export class FileService {
     assetId: string,
     transcriptFileName: string,
     audioFileName: string,
-    audioStartTime: string
+    audioStartTime: string,
   ) {
     let fileToBeSaved = FileMapper.mapForSave(
       assetId,
@@ -313,7 +313,7 @@ export class FileService {
       {
         audio_start_time: audioStartTime,
         audio_file_name: audioFileName,
-      }
+      },
     );
     return this.repository.create(fileToBeSaved);
   }
@@ -327,7 +327,7 @@ export class FileService {
       0,
       Constants.FILE_STATUS.QUEUED,
       'Transcription file queued for processing',
-      0
+      0,
     );
     return this.repository.create(fileToBeSaved);
   }
@@ -337,7 +337,7 @@ export class FileService {
     if (AppConfigService.appConfig.TRANSCRIPTION_GENERATION_ENABLED && asset.with_transcription) {
       let audioFilePath = Utils.getLocalMp3Path(
         updatedFile.asset_id.toString(),
-        AppConfigService.appConfig.TEMP_VIDEO_DIRECTORY
+        AppConfigService.appConfig.TEMP_VIDEO_DIRECTORY,
       );
       if (!fs.existsSync(audioFilePath)) {
         console.log('Audio file does not exist, skipping transcription generation');
@@ -346,7 +346,7 @@ export class FileService {
 
       let outputDir = `${Utils.getLocalVideoRootPath(
         updatedFile.asset_id.toString(),
-        AppConfigService.appConfig.TEMP_VIDEO_DIRECTORY
+        AppConfigService.appConfig.TEMP_VIDEO_DIRECTORY,
       )}/audio_chunks/`;
       if (!fs.existsSync(outputDir)) {
         fs.mkdirSync(outputDir);
@@ -366,7 +366,7 @@ export class FileService {
           asset._id.toString(),
           `transcript_${i}.json`,
           sortedFiles[i],
-          this.formatSecondsToHHMMSS(startTimeSeconds)
+          this.formatSecondsToHHMMSS(startTimeSeconds),
         );
         startTimeSeconds += AppConfigService.appConfig.AUDIO_CHUNK_DURATION_IN_SEC;
         console.log(`Created transcription file for chunk: ${chunkInputFilePath}`);

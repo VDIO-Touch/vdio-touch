@@ -8,7 +8,10 @@ import { AssetRepository } from '@/src/api/assets/repositories/asset.repository'
 
 @Injectable()
 export class CleanupService {
-  constructor(private fileRepository: FileRepository, private assetRepository: AssetRepository) {}
+  constructor(
+    private fileRepository: FileRepository,
+    private assetRepository: AssetRepository,
+  ) {}
 
   async cleanupDevice() {
     const activeDirectories = await this.fileRepository.findAssetIdsWithStatuses([

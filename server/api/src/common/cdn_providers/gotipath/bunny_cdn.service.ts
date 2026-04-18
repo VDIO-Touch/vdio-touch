@@ -19,8 +19,8 @@ export class BunnyCdnService {
             headers: {
               AccessKey: `Bearer ${AppConfigService.appConfig.BUNNY_CDN_API_KEY}`,
             },
-          }
-        )
+          },
+        ),
       );
       return res.data;
     } catch (e) {

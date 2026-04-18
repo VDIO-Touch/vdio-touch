@@ -11,7 +11,7 @@ import {
 export class WebhookResponseRepository extends BaseRepository<WebhookResponseDocument> {
   constructor(
     @InjectModel(WEBHOOK_RESPONSE_COLLECTION_NAME)
-    webhookResponseDocumentModel: Model<WebhookResponseDocument>
+    webhookResponseDocumentModel: Model<WebhookResponseDocument>,
   ) {
     super(webhookResponseDocumentModel);
   }

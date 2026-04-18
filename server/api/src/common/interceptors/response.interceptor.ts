@@ -14,7 +14,7 @@ export class ResponseInterceptor implements NestInterceptor {
           errors: [],
           data: res.data,
         };
-      })
+      }),
     );
   }
 }

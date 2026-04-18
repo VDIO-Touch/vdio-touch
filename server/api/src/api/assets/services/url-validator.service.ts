@@ -18,7 +18,7 @@ export class UrlValidatorService {
         this.httpService.head(url, {
           timeout: 10000, // Increased timeout to 30 seconds
           maxRedirects: 5, // Allow redirects
-        })
+        }),
       );
 
       // Return true for successful status codes (2xx range)
@@ -32,7 +32,7 @@ export class UrlValidatorService {
             headers: {
               Range: 'bytes=0-0', // Request only first byte
             },
-          })
+          }),
         );
 
         return (response.status >= 200 && response.status < 300) || response.status === 206; // 206 for partial content

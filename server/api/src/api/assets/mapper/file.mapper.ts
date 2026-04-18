@@ -16,7 +16,7 @@ export class FileMapper {
     status: string,
     status_details: string,
     size: number = 0,
-    meta: any = {}
+    meta: any = {},
   ): Omit<FileDocument, '_id'> {
     return {
       asset_id: mongoose.Types.ObjectId(asset_id),
@@ -48,7 +48,7 @@ export class FileMapper {
       {
         enableImplicitConversion: true,
         excludeExtraneousValues: true,
-      }
+      },
     );
   }
 

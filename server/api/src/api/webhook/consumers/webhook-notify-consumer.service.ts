@@ -8,7 +8,10 @@ import { HttpService } from '@nestjs/axios';
 
 @Injectable()
 export class WebhookNotifyConsumer {
-  constructor(private webhookResponseService: WebhookResponseService, private httpService: HttpService) {}
+  constructor(
+    private webhookResponseService: WebhookResponseService,
+    private httpService: HttpService,
+  ) {}
 
   @RabbitSubscribe({
     exchange: process.env.RABBIT_MQ_VIDEO_TOUCH_TOPIC_EXCHANGE,
@@ -25,7 +28,7 @@ export class WebhookNotifyConsumer {
             'x-vdio-touch-key': msg.auth_token,
           },
           timeout: 5000,
-        })
+        }),
       );
 
       await this.webhookResponseService.create({

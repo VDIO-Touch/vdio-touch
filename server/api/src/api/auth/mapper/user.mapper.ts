@@ -24,7 +24,7 @@ export class UserMapper {
       {
         enableImplicitConversion: true,
         excludeExtraneousValues: true,
-      }
+      },
     );
   }
 }

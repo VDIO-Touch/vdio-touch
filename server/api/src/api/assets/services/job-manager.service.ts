@@ -24,7 +24,7 @@ export class JobManagerService {
     @InjectQueue('download-file-generation') private downloadFileGenerationQueue: Queue,
     @InjectQueue('extract-audio') private audioExtractionQueue: Queue,
     @InjectQueue('audio-transcription') private audioTranscriptionQueue: Queue,
-    @InjectQueue('audio-transcript-merge') private transcriptMergerQueue: Queue
+    @InjectQueue('audio-transcript-merge') private transcriptMergerQueue: Queue,
   ) {}
 
   async getThumbnailJobByJobId(jobId: string): Promise<Models.ThumbnailGenerationJobModel | null> {
@@ -212,7 +212,7 @@ export class JobManagerService {
           type: 'fixed',
           delay: minutesToMilliseconds(AppConfigService.appConfig.RETRY_JOB_BACKOFF_IN_MINUTE),
         },
-      }
+      },
     );
   }
 
@@ -231,7 +231,7 @@ export class JobManagerService {
           type: 'fixed',
           delay: minutesToMilliseconds(AppConfigService.appConfig.RETRY_JOB_BACKOFF_IN_MINUTE),
         },
-      }
+      },
     );
   }
 
@@ -303,7 +303,7 @@ export class JobManagerService {
           type: 'fixed',
           delay: minutesToMilliseconds(AppConfigService.appConfig.RETRY_JOB_BACKOFF_IN_MINUTE),
         },
-      }
+      },
     );
   }
 
@@ -325,13 +325,13 @@ export class JobManagerService {
           type: 'fixed',
           delay: minutesToMilliseconds(AppConfigService.appConfig.RETRY_JOB_BACKOFF_IN_MINUTE),
         },
-      }
+      },
     );
   }
   async publishTranscriptMergingJob(
     assetId: string,
     mainTranscriptFile: FileDocument,
-    partialTranscriptFile: FileDocument[]
+    partialTranscriptFile: FileDocument[],
   ) {
     let transcriptMergingJob: Models.AudioTranscriptionMergeJobModel = {
       asset_id: assetId,
@@ -355,7 +355,7 @@ export class JobManagerService {
           type: 'fixed',
           delay: minutesToMilliseconds(AppConfigService.appConfig.RETRY_JOB_BACKOFF_IN_MINUTE),
         },
-      }
+      },
     );
   }
 }

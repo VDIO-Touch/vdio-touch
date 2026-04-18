@@ -20,14 +20,14 @@ export class AssetResolver {
   constructor(
     private assetService: AssetService,
     private fileService: FileService,
-    private assetRepository: AssetRepository
+    private assetRepository: AssetRepository,
   ) {}
 
   @Mutation(() => CreateAssetResponse, { name: 'CreateAsset' })
   @UseGuards(GqlAuthGuard)
   async createAsset(
     @Args('createAssetInput') createAssetInputDto: CreateAssetInputDto,
-    @UserInfoDec() user: UserDocument
+    @UserInfoDec() user: UserDocument,
   ): Promise<Asset> {
     let createdAsset = await this.assetService.create(createAssetInputDto, user);
     let statusLogs = AssetMapper.toStatusLogsResponse(createdAsset.status_logs as [StatusDocument]);
@@ -38,7 +38,7 @@ export class AssetResolver {
   @UseGuards(GqlAuthGuard)
   async recreateAsset(
     @Args('recreateAssetInputDto') recreateAssetInputDto: RecreateAssetInputDto,
-    @UserInfoDec() user: UserDocument
+    @UserInfoDec() user: UserDocument,
   ): Promise<Asset> {
     let currentAsset = await this.assetService.getAsset({ _id: recreateAssetInputDto._id.toString() }, user);
     if (!currentAsset) {
@@ -47,7 +47,7 @@ export class AssetResolver {
     let sourceFile = await this.fileService.getFileByType(
       currentAsset._id.toString(),
       FILE_TYPE.SOURCE,
-      FILE_STATUS.READY
+      FILE_STATUS.READY,
     );
 
     let mainFileUrl = await this.assetService.getSourceFileUrlToReprocess(currentAsset, sourceFile);
@@ -64,7 +64,7 @@ export class AssetResolver {
         with_transcription: currentAsset.with_transcription,
         with_transcoding: currentAsset.with_transcoding,
       },
-      user
+      user,
     );
     let statusLogs = AssetMapper.toStatusLogsResponse(createdAsset.status_logs as [StatusDocument]);
     return AssetMapper.toAssetResponse(createdAsset, statusLogs);
@@ -74,7 +74,7 @@ export class AssetResolver {
   @UseGuards(GqlAuthGuard)
   async reprocessAsset(
     @Args('reprocessAssetInputDto') reprocessAssetInputDto: ReprocessAssetInputDto,
-    @UserInfoDec() user: UserDocument
+    @UserInfoDec() user: UserDocument,
   ): Promise<Asset> {
     let currentAsset = await this.assetService.getAsset({ _id: reprocessAssetInputDto._id.toString() }, user);
     if (!currentAsset) {
@@ -83,7 +83,7 @@ export class AssetResolver {
     let sourceFile = await this.fileService.getFileByType(
       currentAsset._id.toString(),
       FILE_TYPE.SOURCE,
-      FILE_STATUS.READY
+      FILE_STATUS.READY,
     );
 
     let mainFileUrl = await this.assetService.getSourceFileUrlToReprocess(currentAsset, sourceFile);
@@ -94,7 +94,7 @@ export class AssetResolver {
       { _id: currentAsset._id },
       {
         source_url: mainFileUrl,
-      }
+      },
     );
     let reProcessedAsset = await this.assetService.reprocessAsset(currentAsset, mainFileUrl);
 
@@ -107,7 +107,7 @@ export class AssetResolver {
   async updateAsset(
     @Args('_id') id: string,
     @Args('updateAssetInputDto') updateAssetInputDto: UpdateAssetInputDto,
-    @UserInfoDec() user: UserDocument
+    @UserInfoDec() user: UserDocument,
   ): Promise<Asset> {
     let currentAsset = await this.assetService.getAsset({ _id: id }, user);
     if (!currentAsset) {
@@ -136,7 +136,7 @@ export class AssetResolver {
   @UseGuards(GqlAuthGuard)
   async listAssets(
     @Args('listAssetInputDto') listAssetInputDto: ListAssetInputDto,
-    @UserInfoDec() user: UserDocument
+    @UserInfoDec() user: UserDocument,
   ): Promise<PaginatedAssetResponse> {
     let paginatedResult = await this.assetService.listVideos(listAssetInputDto, user);
     return AssetMapper.toPaginatedAssetResponse(paginatedResult);
@@ -146,7 +146,7 @@ export class AssetResolver {
   @UseGuards(GqlAuthGuard)
   async getAsset(
     @Args('getAssetInputDto') getAssetInputDto: GetAssetInputDto,
-    @UserInfoDec() user: UserDocument
+    @UserInfoDec() user: UserDocument,
   ): Promise<Asset> {
     let asset = await this.assetService.getAsset(getAssetInputDto, user);
     if (!asset) {

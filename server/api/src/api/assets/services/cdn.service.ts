@@ -7,7 +7,10 @@ import { getServerManifestPath } from 'video-touch-common/dist/utils';
 
 @Injectable()
 export class CdnService {
-  constructor(private bunnyCdnService: BunnyCdnService, private gotipathCdnService: GotipathCdnService) {}
+  constructor(
+    private bunnyCdnService: BunnyCdnService,
+    private gotipathCdnService: GotipathCdnService,
+  ) {}
 
   async invalidateCache(assetId: string) {
     const masterFilePath = `/${getServerManifestPath(assetId)}`;

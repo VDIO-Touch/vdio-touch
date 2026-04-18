@@ -13,11 +13,11 @@ export async function setupSwagger(app: INestApplication, port: number) {
     .setVersion(AppConfigService.appConfig.SWAGGER_VERSION)
     .addApiKey(
       { type: 'apiKey', name: 'Authorization', in: 'header', scheme: 'bearer', bearerFormat: 'Bearer' },
-      'auth'
+      'auth',
     )
     .addServer(
       AppConfigService.appConfig.SWAGGER_SERVER_BASE_URL,
-      AppConfigService.appConfig.SWAGGER_SERVER_BASE_URL_DESCRIPTION
+      AppConfigService.appConfig.SWAGGER_SERVER_BASE_URL_DESCRIPTION,
     )
     .build();
 
@@ -27,7 +27,7 @@ export async function setupSwagger(app: INestApplication, port: number) {
     basicAuth({
       challenge: true,
       users: { [SWAGGER_USERNAME]: SWAGGER_PASSWORD },
-    })
+    }),
   );
 
   SwaggerModule.setup(swaggerDocPath, app, document, {

@@ -41,7 +41,10 @@ import { User } from '@/src/api/auth/models/user.model';
 @ApiTags('Auth')
 @UseInterceptors(ResponseInterceptor)
 export class AuthController {
-  constructor(private userService: UserService, private authService: AuthService) {}
+  constructor(
+    private userService: UserService,
+    private authService: AuthService,
+  ) {}
 
   @Post('signup')
   @ApiCreatedResponse({ type: SwaggerBaseApiResponse(AuthResDto, HttpStatus.CREATED) })

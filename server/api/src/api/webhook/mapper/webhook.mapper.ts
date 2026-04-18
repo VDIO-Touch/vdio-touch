@@ -7,7 +7,7 @@ import { BasePaginatedResponse } from '@/src/common/database/models/abstract.mod
 export class WebhookMapper {
   static buildWebhookDocumentForSaving(
     createWebhookInput: CreateWebhookInputDto,
-    user: UserDocument
+    user: UserDocument,
   ): Omit<WebHookDocument, '_id'> {
     return {
       user_id: user._id,

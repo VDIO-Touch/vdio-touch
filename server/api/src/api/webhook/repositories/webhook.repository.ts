@@ -18,7 +18,7 @@ export class WebhookRepository extends BaseRepository<WebHookDocument> {
     afterCursor: string,
     beforeCursor: string,
     search: string,
-    user: UserDocument
+    user: UserDocument,
   ): Promise<BasePaginatedResponse<WebHookDocument>> {
     // Build the base match stage with user filter
     const baseMatch: any = {

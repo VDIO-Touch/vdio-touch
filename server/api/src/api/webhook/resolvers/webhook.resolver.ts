@@ -19,7 +19,7 @@ export class WebhookResolver {
   @UseGuards(GqlAuthGuard)
   async create(
     @Args('createWebhookInput') createWebhookInputDto: CreateWebhookInputDto,
-    @UserInfoDec() user: UserDocument
+    @UserInfoDec() user: UserDocument,
   ) {
     let newWebhook = await this.webhookService.create(createWebhookInputDto, user);
 
@@ -31,7 +31,7 @@ export class WebhookResolver {
   async updateWebhook(
     @Args('_id') id: string,
     @Args('updateWebhookInputDto') updateWebhookInputDto: UpdateWebhookInputDto,
-    @UserInfoDec() user: UserDocument
+    @UserInfoDec() user: UserDocument,
   ): Promise<Webhook> {
     let currentWebhook = await this.webhookService.getWebhook(id, user);
     if (!currentWebhook) {
@@ -59,7 +59,7 @@ export class WebhookResolver {
   @UseGuards(GqlAuthGuard)
   async listWebhooks(
     @Args('listWebhookInputDto') listWebhookInputDto: ListWebhookInputDto,
-    @UserInfoDec() user: UserDocument
+    @UserInfoDec() user: UserDocument,
   ): Promise<PaginatedWebhookResponse> {
     let paginatedResult = await this.webhookService.listWebhooks(listWebhookInputDto, user);
     return WebhookMapper.toPaginatedWebhookResponse(paginatedResult);

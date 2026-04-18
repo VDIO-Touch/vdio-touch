@@ -12,7 +12,7 @@ import { CdnService } from '@/src/api/assets/services/cdn.service';
 export class AssetMapper {
   static buildAssetDocumentForSaving(
     createVideoInput: CreateAssetInputDto,
-    userDocument: UserDocument
+    userDocument: UserDocument,
   ): Omit<AssetDocument, '_id'> {
     let title = createVideoInput.title;
     if (!title) {
@@ -32,7 +32,7 @@ export class AssetMapper {
 
   static buildAssetDocumentFromUploadReq(
     uploadAssetReqDto: CreateAssetFromUploadInputDto,
-    userDocument: UserDocument
+    userDocument: UserDocument,
   ): Omit<AssetDocument, '_id'> {
     let title = uploadAssetReqDto.title;
     if (!title) {
@@ -53,7 +53,7 @@ export class AssetMapper {
   }
 
   static toPaginatedAssetResponse(
-    paginatedAssetResponse: BasePaginatedResponse<AssetDocument>
+    paginatedAssetResponse: BasePaginatedResponse<AssetDocument>,
   ): PaginatedAssetResponse {
     let assets: Asset[] = [];
     for (let asset of paginatedAssetResponse.items) {
@@ -90,7 +90,7 @@ export class AssetMapper {
         with_transcoding: asset.with_transcoding ?? true,
         meta: asset.meta ?? null,
       } as Asset,
-      { excludeExtraneousValues: true, enableImplicitConversion: true }
+      { excludeExtraneousValues: true, enableImplicitConversion: true },
     );
   }
 
@@ -109,8 +109,8 @@ export class AssetMapper {
           {
             excludeExtraneousValues: true,
             enableImplicitConversion: true,
-          }
-        )
+          },
+        ),
       );
     }
     return logs;

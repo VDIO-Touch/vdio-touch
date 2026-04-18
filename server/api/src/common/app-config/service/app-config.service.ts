@@ -16,7 +16,7 @@ export class AppConfigService {
       SWAGGER_SERVER_BASE_URL: this.configService.get('SWAGGER_SERVER_BASE_URL', `http://localhost:${port}`),
       SWAGGER_SERVER_BASE_URL_DESCRIPTION: this.configService.get(
         'SWAGGER_SERVER_BASE_URL_DESCRIPTION',
-        'Swagger Server Base URL'
+        'Swagger Server Base URL',
       ),
       SWAGGER_TITLE: this.configService.get('SWAGGER_TITLE', 'NEST BOILERPLATE'),
       SWAGGER_DESCRIPTION: this.configService.get('SWAGGER_DESCRIPTION', 'NEST BOILERPLATE API'),
@@ -33,7 +33,7 @@ export class AppConfigService {
       RABBIT_MQ_URL: this.configService.getOrThrow('RABBIT_MQ_URL'),
       RABBIT_MQ_VIDEO_TOUCH_TOPIC_EXCHANGE: this.configService.getOrThrow('RABBIT_MQ_VIDEO_TOUCH_TOPIC_EXCHANGE'),
       RABBIT_MQ_UPDATE_ASSET_STATUS_ROUTING_KEY: this.configService.getOrThrow(
-        'RABBIT_MQ_UPDATE_ASSET_STATUS_ROUTING_KEY'
+        'RABBIT_MQ_UPDATE_ASSET_STATUS_ROUTING_KEY',
       ),
       RABBIT_MQ_UPDATE_ASSET_STATUS_QUEUE: this.configService.getOrThrow('RABBIT_MQ_UPDATE_ASSET_STATUS_QUEUE'),
 
@@ -47,7 +47,7 @@ export class AppConfigService {
       RABBIT_MQ_UPDATE_ASSET_ROUTING_KEY: this.configService.getOrThrow('RABBIT_MQ_UPDATE_ASSET_ROUTING_KEY'),
       RABBIT_MQ_UPDATE_ASSET_QUEUE: this.configService.getOrThrow('RABBIT_MQ_UPDATE_ASSET_QUEUE'),
       RABBIT_MQ_UPDATE_FILE_STATUS_ROUTING_KEY: this.configService.getOrThrow(
-        'RABBIT_MQ_UPDATE_FILE_STATUS_ROUTING_KEY'
+        'RABBIT_MQ_UPDATE_FILE_STATUS_ROUTING_KEY',
       ),
       RABBIT_MQ_UPDATE_FILE_STATUS_QUEUE: this.configService.getOrThrow('RABBIT_MQ_UPDATE_FILE_STATUS_QUEUE'),
       TEMP_VIDEO_DIRECTORY: this.configService.getOrThrow('TEMP_VIDEO_DIRECTORY'),
@@ -69,7 +69,7 @@ export class AppConfigService {
       REDIS_PORT: this.configService.getOrThrow('REDIS_PORT'),
       MIN_AVAILABLE_DISK_SPACE_REQUIRED_IN_BYTES: +this.configService.get(
         'MIN_AVAILABLE_DISK_SPACE_REQUIRED_IN_BYTES',
-        2147483648
+        2147483648,
       ),
       RETRY_JOB_ATTEMPT_COUNT: +this.configService.get('RETRY_JOB_ATTEMPT_COUNT', 3),
       RETRY_JOB_BACKOFF_IN_MINUTE: +this.configService.get('RETRY_JOB_BACKOFF_IN_MINUTE', 10),

@@ -7,7 +7,10 @@ import { Job } from 'bullmq/dist/esm/classes/job';
 
 @Injectable()
 export class JobVerificationService {
-  constructor(private fileRepository: FileRepository, private jobManagerService: JobManagerService) {}
+  constructor(
+    private fileRepository: FileRepository,
+    private jobManagerService: JobManagerService,
+  ) {}
 
   /**
    * Verifies and republishes jobs for files with Processing and Queued status
@@ -67,7 +70,7 @@ export class JobVerificationService {
           job_id: newJob.id,
           latest_status: Constants.FILE_STATUS.QUEUED,
         },
-      }
+      },
     );
     return newJob;
   }
@@ -88,7 +91,7 @@ export class JobVerificationService {
           job_id: newJob.id,
           latest_status: Constants.FILE_STATUS.QUEUED,
         },
-      }
+      },
     );
     return newJob;
   }
@@ -110,7 +113,7 @@ export class JobVerificationService {
           job_id: newJob.id,
           latest_status: Constants.FILE_STATUS.QUEUED,
         },
-      }
+      },
     );
     return newJob;
   }

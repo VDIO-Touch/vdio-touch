@@ -178,7 +178,7 @@ import { CdnService } from '@/src/api/assets/services/cdn.service';
             removeOnFail: true,
           },
         }),
-      }
+      },
     ),
     BullBoardModule.forFeature({
       name: 'process_video_360p',
@@ -250,7 +250,7 @@ import { CdnService } from '@/src/api/assets/services/cdn.service';
               (asset as any).latest_status = Constants.VIDEO_STATUS.UPLOAD_PENDING;
               (asset as any).status_logs = StatusMapper.mapForSave(
                 Constants.VIDEO_STATUS.UPLOAD_PENDING,
-                'Video is uploading'
+                'Video is uploading',
               );
             }
           });

@@ -19,10 +19,10 @@ export class BaseApiResponse<T> {
 export function SwaggerBaseApiResponse<T>(type: T, statusCode: number): typeof BaseApiResponse {
   class ExtendedBaseApiResponse<T> extends BaseApiResponse<T> {
     @ApiProperty({ type })
-    public declare data: T;
+    declare public data: T;
 
     @ApiProperty({ default: statusCode })
-    public declare status: number;
+    declare public status: number;
   }
 
   // NOTE : Overwrite the returned class name, otherwise whichever type calls this function in the last,
@@ -77,7 +77,7 @@ export class BaseApiErrorResponse {
 export function SwaggerBaseApiErrorResponse(statusCode: number): typeof BaseApiErrorResponse {
   class ExtendedBaseApiErrorResponse extends BaseApiErrorResponse {
     @ApiProperty({ default: statusCode })
-    public declare status: number;
+    declare public status: number;
   }
 
   // NOTE : Overwrite the returned class name, otherwise whichever type calls this function in the last,

@@ -55,7 +55,7 @@ export class TusService {
       fs.mkdirSync(rootPath, { recursive: true });
     }
     let sourceFilePath = `${Utils.getTempLocalUploadDirectory(
-      AppConfigService.appConfig.TEMP_UPLOAD_DIRECTORY
+      AppConfigService.appConfig.TEMP_UPLOAD_DIRECTORY,
     )}/${uploadId}`;
     let destinationFilePath = `${rootPath}/${assetId.toString()}.mp4`;
     console.log('renaming file', sourceFilePath, destinationFilePath);

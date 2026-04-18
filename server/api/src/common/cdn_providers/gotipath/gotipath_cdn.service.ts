@@ -20,8 +20,8 @@ export class GotipathCdnService {
             headers: {
               Authorization: `Bearer ${AppConfigService.appConfig.GOTIPATH_API_KEY}`,
             },
-          }
-        )
+          },
+        ),
       );
       return res.data;
     } catch (e) {

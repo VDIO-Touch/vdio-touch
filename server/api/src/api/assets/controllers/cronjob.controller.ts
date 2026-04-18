@@ -8,7 +8,7 @@ import { JobVerificationService } from '@/src/api/assets/services/job-verificati
 export class CronjobController {
   constructor(
     private readonly cleanupService: CleanupService,
-    private jobVerificationService: JobVerificationService
+    private jobVerificationService: JobVerificationService,
   ) {}
 
   @Post('cleanup-device')

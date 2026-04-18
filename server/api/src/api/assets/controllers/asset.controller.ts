@@ -17,7 +17,7 @@ export class AssetController {
     private userService: UserService,
     private assetRepo: AssetRepository,
     private fileRepo: FileRepository,
-    private transcriptService: TranscriptService
+    private transcriptService: TranscriptService,
   ) {}
 
   @Post()

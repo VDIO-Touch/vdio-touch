@@ -24,7 +24,7 @@ export class thumbnailByAssetLoader extends DataLoader<string, string> {
     for (let assetId of assetIds) {
       let thumbnailFile = thumbnailsFiles.find((file) => file.asset_id.toString() === assetId);
       thumbnailUrls.push(
-        thumbnailFile ? FileMapper.getThumbnailCDNUrl(assetId) : AppConfigService.appConfig.DEFAULT_THUMBNAIL_URL
+        thumbnailFile ? FileMapper.getThumbnailCDNUrl(assetId) : AppConfigService.appConfig.DEFAULT_THUMBNAIL_URL,
       );
     }
 

@@ -18,7 +18,10 @@ import { WEBHOOK_IDENTIFICATION_TYPES } from '@/src/common/constants';
 
 @Injectable()
 export class WebhookService {
-  constructor(private webhookRepository: WebhookRepository, private rabbitMqService: RabbitMqService) {}
+  constructor(
+    private webhookRepository: WebhookRepository,
+    private rabbitMqService: RabbitMqService,
+  ) {}
 
   async create(input: CreateWebhookInputDto, user: UserDocument): Promise<WebHookDocument> {
     let webhookDocument = WebhookMapper.buildWebhookDocumentForSaving(input, user);
@@ -31,7 +34,7 @@ export class WebhookService {
       listWebhookInputDto.after,
       listWebhookInputDto.before,
       listWebhookInputDto.search,
-      user
+      user,
     );
   }
 
@@ -42,7 +45,7 @@ export class WebhookService {
         url: updateWebhookInput.url ? updateWebhookInput.url : oldWebhook.url,
         secret_token:
           updateWebhookInput.secret_token !== undefined ? updateWebhookInput.secret_token : oldWebhook.secret_token,
-      }
+      },
     );
     return this.webhookRepository.findOne({ _id: oldWebhook._id });
   }
@@ -89,7 +92,7 @@ export class WebhookService {
             payload: payload,
             identification_type: WEBHOOK_IDENTIFICATION_TYPES.ASSET,
             identification_value: updatedAsset._id.toString(),
-          } as WebhookNotifyConsumerDto
+          } as WebhookNotifyConsumerDto,
         );
       }
     } catch (err: unknown) {
@@ -138,7 +141,7 @@ export class WebhookService {
             webhook_id: webhook._id.toString(),
             identification_type: WEBHOOK_IDENTIFICATION_TYPES.FILE,
             identification_value: updatedFile._id.toString(),
-          } as WebhookNotifyConsumerDto
+          } as WebhookNotifyConsumerDto,
         );
       }
     } catch (err) {

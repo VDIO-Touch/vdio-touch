@@ -29,7 +29,7 @@ export class AssetService {
     private jobManagerService: JobManagerService,
     private cleanUpService: CleanupService,
     private webhookService: WebhookService,
-    private urlValidatorService: UrlValidatorService
+    private urlValidatorService: UrlValidatorService,
   ) {}
 
   async create(createVideoInput: CreateAssetInputDto, userDocument: UserDocument) {
@@ -48,7 +48,7 @@ export class AssetService {
       listVideoInputDto.after,
       listVideoInputDto.before,
       listVideoInputDto.search,
-      user
+      user,
     );
   }
 
@@ -66,7 +66,7 @@ export class AssetService {
         title: updateVideoInput.title ? updateVideoInput.title : oldVideo.title,
         description: updateVideoInput.description ? updateVideoInput.description : updateVideoInput.description,
         tags: updateVideoInput.tags ? updateVideoInput.tags : oldVideo.tags,
-      }
+      },
     );
     return this.repository.findOne({ _id: oldVideo._id });
   }
@@ -76,7 +76,7 @@ export class AssetService {
       { _id: currentVideo._id },
       {
         is_deleted: true,
-      }
+      },
     );
     return this.repository.findOne({ _id: currentVideo._id });
   }
@@ -97,7 +97,7 @@ export class AssetService {
             details: details,
           },
         },
-      }
+      },
     );
   }
 
@@ -158,7 +158,7 @@ export class AssetService {
           this.updateAssetStatus(
             updatedAsset._id.toString(),
             Constants.VIDEO_STATUS.FAILED,
-            `Error pushing validate job. ${err.toString()}`
+            `Error pushing validate job. ${err.toString()}`,
           );
         });
     }
@@ -167,7 +167,7 @@ export class AssetService {
         updatedAsset._id.toString(),
         updatedAsset.height,
         updatedAsset.width,
-        updatedAsset.size
+        updatedAsset.size,
       );
       await this.createThumbnailFile(updatedAsset._id.toString(), updatedAsset.height, updatedAsset.width);
       await this.createAudioFile(updatedAsset._id.toString());
@@ -191,7 +191,7 @@ export class AssetService {
         await this.updateAssetStatus(
           updatedAsset._id.toString(),
           Constants.VIDEO_STATUS.DOWNLOADING,
-          'Downloading assets'
+          'Downloading assets',
         );
         await this.repository.findOneAndUpdate(
           {
@@ -199,14 +199,14 @@ export class AssetService {
           },
           {
             job_id: job.id,
-          }
+          },
         );
       } catch (e) {
         console.log('error pushing download assets job', e);
         await this.updateAssetStatus(
           updatedAsset._id.toString(),
           Constants.VIDEO_STATUS.FAILED,
-          `Error pushing download job. ${e.toString()}`
+          `Error pushing download job. ${e.toString()}`,
         );
       }
     }
@@ -228,14 +228,14 @@ export class AssetService {
         },
         {
           job_id: job.id,
-        }
+        },
       );
     } catch (e) {
       console.log('error pushing download assets job', e);
       await this.updateAssetStatus(
         doc._id.toString(),
         Constants.VIDEO_STATUS.FAILED,
-        `Error pushing download job. ${e.toString()}`
+        `Error pushing download job. ${e.toString()}`,
       );
     }
   }
@@ -258,7 +258,7 @@ export class AssetService {
       height,
       width,
       Constants.FILE_STATUS.QUEUED,
-      'File queued for processing'
+      'File queued for processing',
     );
     return this.fileRepository.create(doc);
   }
@@ -295,7 +295,7 @@ export class AssetService {
       },
       {
         master_file_name: master_file_name,
-      }
+      },
     );
   }
 
@@ -308,7 +308,7 @@ export class AssetService {
       height,
       width,
       Constants.FILE_STATUS.QUEUED,
-      'Thumbnail queued for processing'
+      'Thumbnail queued for processing',
     );
     return this.fileRepository.create(fileToBeSaved);
   }
@@ -323,7 +323,7 @@ export class AssetService {
       width,
       Constants.FILE_STATUS.QUEUED,
       'Source file queued for uploading',
-      size
+      size,
     );
     return this.fileRepository.create(fileToBeSaved);
   }
@@ -343,7 +343,7 @@ export class AssetService {
       largestFile.width,
       Constants.FILE_STATUS.QUEUED,
       'Download file queued for processing',
-      0
+      0,
     );
     return this.fileRepository.create(fileToBeSaved);
   }
@@ -358,7 +358,7 @@ export class AssetService {
       0,
       Constants.FILE_STATUS.QUEUED,
       'Audio file queued for processing',
-      0
+      0,
     );
     return this.fileRepository.create(fileToBeSaved);
   }
@@ -367,7 +367,7 @@ export class AssetService {
     return this.updateAssetStatus(
       currentAsset._id.toString(),
       Constants.VIDEO_STATUS.RE_PROCESSING,
-      'Re-processing Initiated'
+      'Re-processing Initiated',
     );
   }
 

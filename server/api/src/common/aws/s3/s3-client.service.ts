@@ -52,7 +52,7 @@ export class S3ClientService implements OnModuleInit {
   async generateSignedUrlToGetObject(
     bucket: string,
     key: string,
-    expiresIn: number = 3600 // Default to 1 hour
+    expiresIn: number = 3600, // Default to 1 hour
   ): Promise<string> {
     const params = {
       Bucket: bucket,

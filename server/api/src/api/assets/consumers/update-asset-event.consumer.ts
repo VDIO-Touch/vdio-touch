@@ -25,7 +25,7 @@ export class UpdateAssetEventConsumer {
           height: msg.data.height,
           width: msg.data.width,
           duration: msg.data.duration,
-        }
+        },
       );
     } catch (e: any) {
       console.log('error in UpdateAssetStatusEventConsumer', e);

@@ -7,7 +7,10 @@ import { Constants } from 'video-touch-common';
 
 @Injectable()
 export class TranscriptService {
-  constructor(private fileRepository: FileRepository, private jobManagerService: JobManagerService) {}
+  constructor(
+    private fileRepository: FileRepository,
+    private jobManagerService: JobManagerService,
+  ) {}
 
   async generateTranscript(assetId: string, transcriptFile: FileDocument) {
     let partialTranscriptFiles = await this.fileRepository.find({
@@ -32,7 +35,7 @@ export class TranscriptService {
     let jobData = await this.jobManagerService.publishTranscriptMergingJob(
       assetId,
       transcriptFile,
-      partialTranscriptFiles
+      partialTranscriptFiles,
     );
     await this.fileRepository.findOneAndUpdate(
       {
@@ -40,7 +43,7 @@ export class TranscriptService {
       },
       {
         job_id: jobData.id,
-      }
+      },
     );
   }
 

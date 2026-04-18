@@ -22,7 +22,7 @@ export class AssetRepository extends BaseRepository<AssetDocument> {
     afterCursor: string,
     beforeCursor: string,
     search: string,
-    user: UserDocument
+    user: UserDocument,
   ): Promise<BasePaginatedResponse<AssetDocument>> {
     // Build the base match stage with user and soft-delete filters
     const baseMatch: any = {
