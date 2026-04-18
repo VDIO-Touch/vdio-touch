@@ -8,6 +8,7 @@ export class AssetUpdatePayloadDto {
   created_at: string;
   updated_at: string;
   status: string;
+  meta?: Record<string, any>;
 }
 
 export class FileUpdatePayloadDto {

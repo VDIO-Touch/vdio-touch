@@ -26,6 +26,7 @@ export class AssetMapper {
       tags: createVideoInput.tags,
       with_transcription: createVideoInput.with_transcription ?? false,
       with_transcoding: createVideoInput.with_transcoding ?? true,
+      meta: createVideoInput.meta,
     };
   }
 
@@ -43,6 +44,7 @@ export class AssetMapper {
       description: uploadAssetReqDto.description,
       source_url: null,
       tags: uploadAssetReqDto.tags,
+      meta: uploadAssetReqDto.meta,
     };
   }
 
@@ -86,6 +88,7 @@ export class AssetMapper {
         _id: asset._id.toString(),
         with_transcription: asset.with_transcription ?? false,
         with_transcoding: asset.with_transcoding ?? true,
+        meta: asset.meta ?? null,
       } as Asset,
       { excludeExtraneousValues: true, enableImplicitConversion: true }
     );
