@@ -32,7 +32,7 @@ export class DownloaderHttpService {
       throw new Error('Invalid video URL');
     }
 
-    const totalSize = response.headers['content-length'];
+    const totalSize = response.headers['content-length'] as number;
     console.log('Total size:', totalSize);
     if (totalSize > AppConfigService.appConfig.MAX_VIDEO_SIZE_IN_BYTES) {
       throw new Error('Video size is greater than allowed size');
