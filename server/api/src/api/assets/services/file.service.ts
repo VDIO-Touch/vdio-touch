@@ -67,7 +67,7 @@ export class FileService {
 
     let cdnUrl = getCdnFileUrl(updatedFile, CdnService.getCdnBaseUrl());
 
-    this.webhookService.publishFileEvent(updatedFile, assetDocument.user_id, cdnUrl).catch((err) => {
+    this.webhookService.publishFileEvent(updatedFile, assetDocument, cdnUrl).catch((err) => {
       console.log('error while publishing webhook event ', err);
     });
 

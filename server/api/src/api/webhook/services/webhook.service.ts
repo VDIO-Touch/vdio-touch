@@ -98,7 +98,7 @@ export class WebhookService {
       throw new Error('error in publish webhook event');
     }
   }
-  async publishFileEvent(updatedFile: FileDocument, userId: mongoose.Types.ObjectId, cdnFileUrl: string): Promise<any> {
+  async publishFileEvent(updatedFile: FileDocument, asset: AssetDocument, cdnFileUrl: string): Promise<any> {
     let payload: WebhookPayloadDto;
 
     try {
@@ -108,7 +108,7 @@ export class WebhookService {
       }
 
       let webhooks = await this.webhookRepository.find({
-        user_id: userId,
+        user_id: asset.user_id,
       });
 
       payload = {
@@ -123,6 +123,7 @@ export class WebhookService {
           size: updatedFile.size,
           type: updatedFile.type,
           file_url: cdnFileUrl,
+          meta:asset.meta
         },
       };
       for (let webhook of webhooks) {
@@ -132,7 +133,7 @@ export class WebhookService {
           {
             url: webhook.url,
             auth_token: webhook.secret_token,
-            user_id: userId.toString(),
+            user_id: asset.user_id.toString(),
             asset_id: updatedFile.asset_id.toString(),
             payload: payload,
             webhook_id: webhook._id.toString(),
