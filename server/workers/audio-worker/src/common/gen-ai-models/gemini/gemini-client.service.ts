@@ -3,9 +3,10 @@ import { AppConfigService } from '@/src/common/app-config/service/app-config.ser
 import { createPartFromUri, createUserContent, GenerateContentConfig, GoogleGenAI } from '@google/genai';
 import { createWriteStream } from 'fs';
 import { HttpService } from '@nestjs/axios';
+import { IAudioTranscriptionService } from '@/src/common/gen-ai-models/audio-transcription.interface';
 
 @Injectable()
-export class GeminiClientService implements OnModuleInit {
+export class GeminiClientService implements OnModuleInit, IAudioTranscriptionService {
   private aiClient: GoogleGenAI;
   private promtText: string;
 

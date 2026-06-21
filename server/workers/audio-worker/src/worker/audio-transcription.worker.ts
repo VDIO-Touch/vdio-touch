@@ -4,9 +4,7 @@ import { OnModuleInit } from '@nestjs/common';
 import { AppConfigService } from '@/src/common/app-config/service/app-config.service';
 import { Constants, Models, terminal, Utils } from 'video-touch-common';
 import { FileStatusPublisher } from '@/src/worker/file-status.publisher';
-import { GeminiClientService } from '@/src/common/gen-ai-models/gemini/gemini-client.service';
-import { GEN_AI_PLATFORM } from '@/src/common/utils';
-import { OpenAiClientService } from '@/src/common/gen-ai-models/open-ai/open-ai-client.service';
+import { AudioTranscriptionProviderFactory } from '@/src/common/gen-ai-models/audio-transcription-provider.factory';
 import * as fs from 'node:fs';
 
 @Processor(process.env.BULL_AUDIO_TRANSCRIPTION_JOB_QUEUE, {
@@ -15,8 +13,7 @@ import * as fs from 'node:fs';
 export class AudioTranscriptionWorker extends WorkerHost implements OnModuleInit {
   constructor(
     private fileStatusPublisher: FileStatusPublisher,
-    private geminiClientService: GeminiClientService,
-    private openAiClientService: OpenAiClientService,
+    private transcriptionProviderFactory: AudioTranscriptionProviderFactory,
   ) {
     super();
   }
@@ -43,13 +40,13 @@ export class AudioTranscriptionWorker extends WorkerHost implements OnModuleInit
         msg.asset_id,
         AppConfigService.appConfig.TEMP_VIDEO_DIRECTORY,
       );
-      let audioStartTime = job.data.audio_start_time || '00:00:00';
-
       if (!fs.existsSync(outputJsonPath)) {
         fs.mkdirSync(outputJsonPath, { recursive: true });
         console.log(`Created directory for transcript output at ${outputJsonPath}`);
       }
-      await this.transcribeAudio(inputFilePath, `${outputJsonPath}/${job.data.name}`, audioStartTime);
+
+      const provider = this.transcriptionProviderFactory.getProvider();
+      await provider.transcribeAudio(inputFilePath, `${outputJsonPath}/${job.data.name}`);
       this.fileStatusPublisher.publishUpdateFileStatusEvent(
         msg.file_id.toString(),
         'Audio transcription completed',
@@ -73,22 +70,6 @@ export class AudioTranscriptionWorker extends WorkerHost implements OnModuleInit
     }
   }
 
-  async transcribeAudio(inputFilePath: string, outputJsonlPath: string, audioStartTime: string) {
-    let genAIPlatform = this.getGenAIPlatform();
-    switch (genAIPlatform) {
-      case GEN_AI_PLATFORM.GOOGLE_GENAI:
-        console.log('Using Gemini for audio transcription');
-        await this.geminiClientService.transcribeAudio(inputFilePath, outputJsonlPath);
-        break;
-      case GEN_AI_PLATFORM.OPENAI:
-        console.log('Using OpenAI for audio transcription');
-        await this.openAiClientService.transcribeAudio(inputFilePath, outputJsonlPath);
-        break;
-      default:
-        throw new Error('No GenAI platform configured for audio transcription');
-    }
-  }
-
   isLastAttempt(job: Job): boolean {
     console.log(`Job ${job.id} attempts made: ${job.attemptsMade}, max attempts: ${job.opts.attempts}`);
 
@@ -98,16 +79,6 @@ export class AudioTranscriptionWorker extends WorkerHost implements OnModuleInit
       return true; // This is the last attempt
     }
     return false; // There are more attempts left
-  }
-
-  private getGenAIPlatform(): string {
-    if (AppConfigService.appConfig.GOOGLE_GENAI_API_KEY) {
-      return GEN_AI_PLATFORM.GOOGLE_GENAI;
-    }
-    if (AppConfigService.appConfig.OPENAI_API_KEY) {
-      return GEN_AI_PLATFORM.OPENAI;
-    }
-    return null;
   }
 
   async splitAudio(inputFilePath: string, outputDir: string) {

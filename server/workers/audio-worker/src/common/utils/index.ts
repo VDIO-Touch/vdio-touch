@@ -90,6 +90,13 @@ export const GEN_AI_PLATFORM = {
   OPENAI: 'openai',
 };
 
+export const GEN_AI_AUDIO_TRANSCRIPTION_PLATFORM = {
+  GOOGLE_GENAI: 'GOOGLE_GENAI',
+  OPENAI: 'OPENAI',
+  AZURE_AI: 'AZURE_AI',
+  CLOUDFLARE_AI: 'CLOUDFLARE_AI',
+};
+
 export function checkLastAttempt(job: Job): boolean {
   console.log(`Job ${job.id} attempts made: ${job.attemptsMade}, max attempts: ${job.opts.attempts}`);
 
