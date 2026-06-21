@@ -4,9 +4,10 @@ import OpenAI from 'openai';
 import * as fs from 'node:fs';
 import { createWriteStream } from 'fs';
 import { HttpService } from '@nestjs/axios';
+import { IAudioTranscriptionService } from '@/src/common/gen-ai-models/audio-transcription.interface';
 
 @Injectable()
-export class OpenAiClientService implements OnModuleInit {
+export class OpenAiClientService implements OnModuleInit, IAudioTranscriptionService {
   private aiClient: OpenAI;
   private promtText: string;
 

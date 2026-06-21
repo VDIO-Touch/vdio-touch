@@ -30,6 +30,14 @@ export class AppConfigService {
       BULL_AUDIO_SPLIT_JOB_QUEUE: this.configService.getOrThrow('BULL_AUDIO_SPLIT_JOB_QUEUE'),
       BULL_AUDIO_TRANSCRIPT_MERGE_QUEUE: this.configService.getOrThrow('BULL_AUDIO_TRANSCRIPT_MERGE_QUEUE'),
       TRANSCRIPT_PROMT_FILE_URL: this.configService.getOrThrow('TRANSCRIPT_PROMT_FILE_URL'),
+      GEN_AI_AUDIO_TRANSCRIPTION_PROVIDER: this.configService.get('GEN_AI_AUDIO_TRANSCRIPTION_PROVIDER'),
+      AZURE_OPENAI_API_KEY: this.configService.get('AZURE_OPENAI_API_KEY'),
+      AZURE_OPENAI_ENDPOINT: this.configService.get('AZURE_OPENAI_ENDPOINT'),
+      AZURE_OPENAI_DEPLOYMENT: this.configService.get('AZURE_OPENAI_DEPLOYMENT'),
+      AZURE_OPENAI_API_VERSION: this.configService.get('AZURE_OPENAI_API_VERSION'),
+      CLOUDFLARE_ACCOUNT_ID: this.configService.get('CLOUDFLARE_ACCOUNT_ID'),
+      CLOUDFLARE_API_TOKEN: this.configService.get('CLOUDFLARE_API_TOKEN'),
+      CLOUDFLARE_AI_MODEL: this.configService.get('CLOUDFLARE_AI_MODEL'),
     };
   }
 }
