@@ -7,6 +7,7 @@ import * as console from 'node:console';
 import { Job } from 'bullmq';
 import fs from 'fs';
 import { BunnyHttpService } from '@/src/common/bunny/service/bunny-http.service';
+import { R2ClientService } from '@/src/common/r2/service/r2-client.service';
 import { Constants, Models, terminal, Utils } from 'video-touch-common';
 
 @Processor(process.env.BULL_UPLOAD_JOB_QUEUE, { concurrency: 3 })
@@ -14,6 +15,7 @@ export class VideoUploaderJobHandler extends WorkerHost {
   constructor(
     private s3ClientService: S3ClientService,
     private bunnyClientService: BunnyHttpService,
+    private r2ClientService: R2ClientService,
     private rabbitMqService: RabbitMqService,
   ) {
     super();
@@ -92,9 +94,15 @@ export class VideoUploaderJobHandler extends WorkerHost {
         console.log(`video ${msg.height}p uploaded:`, res);
         await this.bunnyClientService.syncMainManifestFile(msg.asset_id.toString());
         console.log('main manifest synced to Bunny');
+      } else if (AppConfigService.appConfig.STORAGE_PROVIDER === Constants.STORAGE_PROVIDER.R2) {
+        const destinationPath = Utils.getBunnyUriVideoPathByHeight(msg.asset_id.toString(), msg.height);
+        let res = await this.r2ClientService.syncDirToR2(localFilePath, destinationPath);
+        console.log(`video ${msg.height}p uploaded:`, res);
+        await this.r2ClientService.syncMainManifestFile(msg.asset_id.toString());
+        console.log('main manifest synced to R2');
       } else {
-        console.log('STORAGE_PROVIDER value must be either s3 or bunny');
-        throw new Error('STORAGE_PROVIDER value must be either s3 or bunny');
+        console.log('STORAGE_PROVIDER value must be one of s3, bunny or r2');
+        throw new Error('STORAGE_PROVIDER value must be one of s3, bunny or r2');
       }
 
       let dirSize = await Utils.getDirSize(localFilePath);
@@ -135,9 +143,13 @@ export class VideoUploaderJobHandler extends WorkerHost {
         const destinationPath = Utils.getServerSourceFileVideoPath(msg.asset_id.toString(), msg.name);
         let res = await this.bunnyClientService.syncFileToBunny(localFilePath, destinationPath);
         console.log(`source file uploaded:`, res);
+      } else if (AppConfigService.appConfig.STORAGE_PROVIDER === Constants.STORAGE_PROVIDER.R2) {
+        const destinationPath = Utils.getServerSourceFileVideoPath(msg.asset_id.toString(), msg.name);
+        let res = await this.r2ClientService.syncFileToR2(localFilePath, destinationPath);
+        console.log(`source file uploaded:`, res);
       } else {
-        console.log('STORAGE_PROVIDER value must be either s3 or bunny');
-        throw new Error('STORAGE_PROVIDER value must be either s3 or bunny');
+        console.log('STORAGE_PROVIDER value must be one of s3, bunny or r2');
+        throw new Error('STORAGE_PROVIDER value must be one of s3, bunny or r2');
       }
 
       this.publishUpdateFileStatusEvent(
@@ -181,9 +193,13 @@ export class VideoUploaderJobHandler extends WorkerHost {
         const destinationPath = Utils.getServerDownloadFilePath(msg.asset_id.toString(), msg.name);
         let res = await this.bunnyClientService.syncFileToBunny(localFilePath, destinationPath);
         console.log(`source file uploaded:`, res);
+      } else if (AppConfigService.appConfig.STORAGE_PROVIDER == Constants.STORAGE_PROVIDER.R2) {
+        const destinationPath = Utils.getServerDownloadFilePath(msg.asset_id.toString(), msg.name);
+        let res = await this.r2ClientService.syncFileToR2(localFilePath, destinationPath);
+        console.log(`source file uploaded:`, res);
       } else {
-        console.log('STORAGE_PROVIDER value must be either s3 or bunny');
-        throw new Error('STORAGE_PROVIDER value must be either s3 or bunny');
+        console.log('STORAGE_PROVIDER value must be one of s3, bunny or r2');
+        throw new Error('STORAGE_PROVIDER value must be one of s3, bunny or r2');
       }
 
       let fileSize = await this.getFileSize(localFilePath);
@@ -229,9 +245,13 @@ export class VideoUploaderJobHandler extends WorkerHost {
         const destinationPath = Utils.getServerAudioFilePath(msg.asset_id.toString(), msg.name);
         let res = await this.bunnyClientService.syncFileToBunny(localFilePath, destinationPath);
         console.log(`audio file uploaded:`, res);
+      } else if (AppConfigService.appConfig.STORAGE_PROVIDER === Constants.STORAGE_PROVIDER.R2) {
+        const destinationPath = Utils.getServerAudioFilePath(msg.asset_id.toString(), msg.name);
+        let res = await this.r2ClientService.syncFileToR2(localFilePath, destinationPath);
+        console.log(`audio file uploaded:`, res);
       } else {
-        console.log('STORAGE_PROVIDER value must be either s3 or bunny');
-        throw new Error('STORAGE_PROVIDER value must be either s3 or bunny');
+        console.log('STORAGE_PROVIDER value must be one of s3, bunny or r2');
+        throw new Error('STORAGE_PROVIDER value must be one of s3, bunny or r2');
       }
 
       let fileSize = await this.getFileSize(localFilePath);
@@ -277,9 +297,13 @@ export class VideoUploaderJobHandler extends WorkerHost {
         const destinationPath = Utils.getServerTranscriptFilePath(msg.asset_id.toString(), msg.name);
         let res = await this.bunnyClientService.syncFileToBunny(localFilePath, destinationPath);
         console.log(`transcript file uploaded:`, res);
+      } else if (AppConfigService.appConfig.STORAGE_PROVIDER === Constants.STORAGE_PROVIDER.R2) {
+        const destinationPath = Utils.getServerTranscriptFilePath(msg.asset_id.toString(), msg.name);
+        let res = await this.r2ClientService.syncFileToR2(localFilePath, destinationPath);
+        console.log(`transcript file uploaded:`, res);
       } else {
-        console.log('STORAGE_PROVIDER value must be either s3 or bunny');
-        throw new Error('STORAGE_PROVIDER value must be either s3 or bunny');
+        console.log('STORAGE_PROVIDER value must be one of s3, bunny or r2');
+        throw new Error('STORAGE_PROVIDER value must be one of s3, bunny or r2');
       }
 
       let fileSize = await this.getFileSize(localFilePath);

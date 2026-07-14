@@ -87,6 +87,11 @@ export class AppConfigService {
       BUNNY_STORAGE_ZONE_NAME: this.configService.get('BUNNY_STORAGE_ZONE_NAME'),
       BUNNY_STORAGE_URL: this.configService.get('BUNNY_STORAGE_URL'),
       BUNNY_ACCESS_KEY: this.configService.get('BUNNY_ACCESS_KEY'),
+      R2_ACCOUNT_ID: this.configService.get('R2_ACCOUNT_ID'),
+      R2_ACCESS_KEY_ID: this.configService.get('R2_ACCESS_KEY_ID'),
+      R2_SECRET_ACCESS_KEY: this.configService.get('R2_SECRET_ACCESS_KEY'),
+      R2_BUCKET_NAME: this.configService.get('R2_BUCKET_NAME'),
+      R2_ENDPOINT: this.configService.get('R2_ENDPOINT'),
       RABBIT_MQ_WEBHOOK_NOTIFY_CONSUMER_QUEUE: this.configService.getOrThrow('RABBIT_MQ_WEBHOOK_NOTIFY_CONSUMER_QUEUE'),
       RABBIT_MQ_WEBHOOK_NOTIFY_ROUTING_KEY: this.configService.getOrThrow('RABBIT_MQ_WEBHOOK_NOTIFY_ROUTING_KEY'),
       GOTIPATH_API_BASE_URL: this.configService.get('GOTIPATH_API_BASE_URL'),
@@ -197,6 +202,19 @@ export class AppConfigService {
         !AppConfigService.appConfig.BUNNY_STORAGE_URL
       ) {
         console.error('Bunny storage provider is selected, but some Bunny configurations are missing.');
+        process.exit(1);
+      }
+    } else if (AppConfigService.appConfig.STORAGE_PROVIDER === Constants.STORAGE_PROVIDER.R2) {
+      if (
+        !AppConfigService.appConfig.R2_ACCESS_KEY_ID ||
+        !AppConfigService.appConfig.R2_SECRET_ACCESS_KEY ||
+        !AppConfigService.appConfig.R2_BUCKET_NAME ||
+        !(AppConfigService.appConfig.R2_ENDPOINT || AppConfigService.appConfig.R2_ACCOUNT_ID)
+      ) {
+        console.error(
+          'Cloudflare R2 storage provider is selected, but some R2 configurations are missing. ' +
+            'Requires R2_ACCESS_KEY_ID, R2_SECRET_ACCESS_KEY, R2_BUCKET_NAME, and either R2_ENDPOINT or R2_ACCOUNT_ID.'
+        );
         process.exit(1);
       }
     } else {

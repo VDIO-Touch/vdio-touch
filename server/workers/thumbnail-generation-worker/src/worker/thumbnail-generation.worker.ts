@@ -7,6 +7,7 @@ import { Job } from 'bullmq';
 import { Processor, WorkerHost } from '@nestjs/bullmq';
 import console from 'node:console';
 import { BunnyHttpService } from '@/src/common/bunny/service/bunny-http.service';
+import { R2ClientService } from '@/src/common/r2/service/r2-client.service';
 
 @Processor(process.env.BULL_THUMBNAIL_GENERATION_JOB_QUEUE)
 export class ThumbnailGenerationWorker extends WorkerHost {
@@ -14,6 +15,7 @@ export class ThumbnailGenerationWorker extends WorkerHost {
     private s3ClientService: S3ClientService,
     private rabbitMqService: RabbitMqService,
     private bunnyClientService: BunnyHttpService,
+    private r2ClientService: R2ClientService,
   ) {
     super();
   }
@@ -60,6 +62,17 @@ export class ThumbnailGenerationWorker extends WorkerHost {
           remotePath: Utils.getServerThumbnailPath(msg.asset_id.toString()),
           contentType: 'image/png',
         });
+        Logger.debug(uploadRes, 'Thumbnail upload response');
+      } else if (AppConfigService.appConfig.STORAGE_PROVIDER === Constants.STORAGE_PROVIDER.R2) {
+        let uploadRes = await this.r2ClientService.uploadObject(
+          {
+            bucket: AppConfigService.appConfig.R2_BUCKET_NAME,
+            key: Utils.getServerThumbnailPath(msg.asset_id.toString()),
+            filePath: thumbnailOutputPath,
+            contentType: 'image/png',
+          },
+          true,
+        );
         Logger.debug(uploadRes, 'Thumbnail upload response');
       } else {
         throw new Error('Unsupported storage provider: ' + AppConfigService.appConfig.STORAGE_PROVIDER);
