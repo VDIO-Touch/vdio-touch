@@ -26,6 +26,11 @@ export class AppConfigService {
       BUNNY_STORAGE_ZONE_NAME: this.configService.get('BUNNY_STORAGE_ZONE_NAME'),
       BUNNY_STORAGE_URL: this.configService.get('BUNNY_STORAGE_URL'),
       BUNNY_ACCESS_KEY: this.configService.get('BUNNY_ACCESS_KEY'),
+      R2_ACCOUNT_ID: this.configService.get('R2_ACCOUNT_ID'),
+      R2_ACCESS_KEY_ID: this.configService.get('R2_ACCESS_KEY_ID'),
+      R2_SECRET_ACCESS_KEY: this.configService.get('R2_SECRET_ACCESS_KEY'),
+      R2_BUCKET_NAME: this.configService.get('R2_BUCKET_NAME'),
+      R2_ENDPOINT: this.configService.get('R2_ENDPOINT'),
     };
   }
 }

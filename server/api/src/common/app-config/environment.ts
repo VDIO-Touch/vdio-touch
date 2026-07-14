@@ -73,6 +73,14 @@ export interface EnvironmentVariables {
   BUNNY_STORAGE_ZONE_NAME: string;
   BUNNY_STORAGE_URL: string;
   BUNNY_ACCESS_KEY: string;
+
+  R2_ACCOUNT_ID: string;
+  R2_ACCESS_KEY_ID: string;
+  R2_SECRET_ACCESS_KEY: string;
+  R2_BUCKET_NAME: string;
+  // Optional. Defaults to https://<R2_ACCOUNT_ID>.r2.cloudflarestorage.com
+  R2_ENDPOINT: string;
+
   RABBIT_MQ_WEBHOOK_NOTIFY_CONSUMER_QUEUE: string;
 
   RABBIT_MQ_WEBHOOK_NOTIFY_ROUTING_KEY: string;

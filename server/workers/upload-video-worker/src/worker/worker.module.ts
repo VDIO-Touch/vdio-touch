@@ -6,6 +6,7 @@ import { VideoUploaderJobHandler } from '@/src/worker/upload-video.worker';
 import { BullModule } from '@nestjs/bullmq';
 import { AppConfigService } from '@/src/common/app-config/service/app-config.service';
 import { BunnyModule } from '@/src/common/bunny/bunny.module';
+import { R2Module } from '@/src/common/r2/r2.module';
 
 @Module({
   imports: [
@@ -13,6 +14,7 @@ import { BunnyModule } from '@/src/common/bunny/bunny.module';
     RabbitMQModule,
     AwsModule,
     BunnyModule,
+    R2Module,
     BullModule.forRootAsync({
       inject: [AppConfigService],
       useFactory: () => ({
