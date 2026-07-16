@@ -3,13 +3,25 @@ import { AppConfigService } from '@/src/common/app-config/service/app-config.ser
 import { terminal, Utils } from 'video-touch-common';
 import console from 'node:console';
 
+/**
+ * rclone infers Content-Type from the file extension, but it has no mapping for
+ * .m3u8: it is absent from Go's builtin table, and the worker image ships no
+ * /etc/mime.types. Playlists would upload as application/octet-stream unless the
+ * type is set explicitly. Every other extension we upload (.ts, .mp4, .mp3,
+ * .json) is detected correctly, so only playlists need the override.
+ *
+ * Installing a mime database instead is not an option: Debian maps .ts to Qt
+ * Linguist sources, which would retag every video segment as text.
+ */
+const M3U8_CONTENT_TYPE = 'application/vnd.apple.mpegurl';
+
 @Injectable()
 export class R2ClientService {
   async syncMainManifestFile(assetId: string): Promise<any> {
     let mainManifestPath = Utils.getMainManifestPath(assetId, AppConfigService.appConfig.TEMP_VIDEO_DIRECTORY);
     const r2ManifestPath = Utils.getServerManifestPath(assetId);
 
-    const res = await this.syncFileToR2(mainManifestPath, r2ManifestPath);
+    const res = await this.syncFileToR2(mainManifestPath, r2ManifestPath, M3U8_CONTENT_TYPE);
 
     console.log('manifest uploaded to R2:', res);
     return res;
@@ -19,11 +31,15 @@ export class R2ClientService {
    * Syncs a single file to R2
    * @param localFile - Absolute path to local file
    * @param r2FilePath - Remote path including filename (e.g., "videos/video.mp4")
+   * @param contentType - Overrides rclone's extension-based detection
    */
-  async syncFileToR2(localFile: string, r2FilePath: string) {
+  async syncFileToR2(localFile: string, r2FilePath: string, contentType?: string) {
     console.log(`[R2] Uploading file: ${localFile} -> ${r2FilePath}`);
 
-    const command = `rclone copyto "${localFile}" "${this.getRemote(r2FilePath)}" --inplace`;
+    let command = `rclone copyto "${localFile}" "${this.getRemote(r2FilePath)}" --inplace`;
+    if (contentType) {
+      command += ` --header-upload "Content-Type: ${contentType}"`;
+    }
 
     return terminal(command);
   }
@@ -36,13 +52,19 @@ export class R2ClientService {
   async syncDirToR2(localDir: string, r2Dir: string) {
     console.log(`[R2] Syncing directory: ${localDir} -> ${r2Dir}`);
 
-    const command = `rclone sync "${localDir}" "${this.getRemote(r2Dir)}" \
-      --inplace \
-      --transfers 16 \
-      --delete-after \
-      --fast-list`;
+    const remote = this.getRemote(r2Dir);
+    const flags = `--inplace --transfers 16 --fast-list`;
 
-    return terminal(command);
+    // Two passes, because --header-upload applies to every file in a transfer.
+    // Segments first, so the playlist only appears once what it references is
+    // already uploaded.
+    const segmentsRes = await terminal(`rclone sync "${localDir}" "${remote}" ${flags} --delete-after \
+      --exclude "*.m3u8"`);
+    console.log('[R2] segments synced:', segmentsRes);
+
+    return terminal(`rclone copy "${localDir}" "${remote}" ${flags} \
+      --include "*.m3u8" \
+      --header-upload "Content-Type: ${M3U8_CONTENT_TYPE}"`);
   }
 
   /**
