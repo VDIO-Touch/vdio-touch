@@ -12,4 +12,5 @@ export const CDN_PROVIDERS = {
   GOTIPATH: 'gotipath',
   CLOUDFRONT: 'cloudfront',
   BUNNY_CDN: 'bunny',
+  CLOUDFLARE: 'cloudflare',
 };

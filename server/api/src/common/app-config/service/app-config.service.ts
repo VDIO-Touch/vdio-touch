@@ -102,6 +102,11 @@ export class AppConfigService {
       BUNNY_CDN_API_BASE_URL: this.configService.get('BUNNY_CDN_API_BASE_URL'),
       GOTIPATH_CDN_BASE_URL: this.configService.get('GOTIPATH_CDN_BASE_URL'),
       BUNNY_CDN_BASE_URL: this.configService.get('BUNNY_CDN_BASE_URL'),
+      CLOUDFLARE_CDN_ZONE_ID: this.configService.get('CLOUDFLARE_CDN_ZONE_ID'),
+      CLOUDFLARE_CDN_API_TOKEN: this.configService.get('CLOUDFLARE_CDN_API_TOKEN'),
+      CLOUDFLARE_CDN_API_BASE_URL:
+        this.configService.get('CLOUDFLARE_CDN_API_BASE_URL') || 'https://api.cloudflare.com',
+      CLOUDFLARE_CDN_BASE_URL: this.configService.get('CLOUDFLARE_CDN_BASE_URL'),
     };
     this.validateTranscriptionGenerationEnabled();
     this.validateStorageConfig();
@@ -153,6 +158,22 @@ export class AppConfigService {
       }
       if (!AppConfigService.appConfig.BUNNY_CDN_API_BASE_URL) {
         console.error('Bunny CDN provider is selected, but BUNNY_CDN_API_BASE_URL is missing.');
+        process.exit(1);
+      }
+    }
+
+    if (cdnProvider == CDN_PROVIDERS.CLOUDFLARE) {
+      console.log('Cloudflare CDN provider is selected, validating required configurations...');
+      if (!AppConfigService.appConfig.CLOUDFLARE_CDN_ZONE_ID) {
+        console.error('Cloudflare CDN provider is selected, but CLOUDFLARE_CDN_ZONE_ID is missing.');
+        process.exit(1);
+      }
+      if (!AppConfigService.appConfig.CLOUDFLARE_CDN_API_TOKEN) {
+        console.error('Cloudflare CDN provider is selected, but CLOUDFLARE_CDN_API_TOKEN is missing.');
+        process.exit(1);
+      }
+      if (!AppConfigService.appConfig.CLOUDFLARE_CDN_BASE_URL) {
+        console.error('Cloudflare CDN provider is selected, but CLOUDFLARE_CDN_BASE_URL is missing.');
         process.exit(1);
       }
     }
