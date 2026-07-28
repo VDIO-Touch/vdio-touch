@@ -1,13 +1,18 @@
 import { Injectable } from '@nestjs/common';
 import { BunnyCdnService } from '@/src/common/cdn_providers/gotipath/bunny_cdn.service';
 import { GotipathCdnService } from '@/src/common/cdn_providers/gotipath/gotipath_cdn.service';
+import { CloudflareCdnService } from '@/src/common/cdn_providers/cloudflare/cloudflare_cdn.service';
 import { AppConfigService } from '@/src/common/app-config/service/app-config.service';
 import { CDN_PROVIDERS } from '@/src/common/constants';
 import { getServerManifestPath } from 'video-touch-common/dist/utils';
 
 @Injectable()
 export class CdnService {
-  constructor(private bunnyCdnService: BunnyCdnService, private gotipathCdnService: GotipathCdnService) {}
+  constructor(
+    private bunnyCdnService: BunnyCdnService,
+    private gotipathCdnService: GotipathCdnService,
+    private cloudflareCdnService: CloudflareCdnService
+  ) {}
 
   async invalidateCache(assetId: string) {
     const masterFilePath = `/${getServerManifestPath(assetId)}`;
@@ -33,6 +38,18 @@ export class CdnService {
           console.error(`Error invalidating cache for asset ${assetId} on BunnyCDN:`, err);
         });
     }
+
+    if (AppConfigService.appConfig.CDN_PROVIDER === CDN_PROVIDERS.CLOUDFLARE) {
+      const masterFileUrl = `${AppConfigService.appConfig.CLOUDFLARE_CDN_BASE_URL}${masterFilePath}`;
+      this.cloudflareCdnService
+        .clearCache([masterFileUrl])
+        .then(() => {
+          console.log(`Cache invalidated for ${masterFileUrl} on Cloudflare CDN`);
+        })
+        .catch((err) => {
+          console.error(`Error invalidating cache for ${masterFileUrl} on Cloudflare CDN:`, err);
+        });
+    }
   }
 
   static getCdnBaseUrl(): string {
@@ -42,6 +59,10 @@ export class CdnService {
 
     if (AppConfigService.appConfig.CDN_PROVIDER === CDN_PROVIDERS.BUNNY_CDN) {
       return AppConfigService.appConfig.BUNNY_CDN_BASE_URL;
+    }
+
+    if (AppConfigService.appConfig.CDN_PROVIDER === CDN_PROVIDERS.CLOUDFLARE) {
+      return AppConfigService.appConfig.CLOUDFLARE_CDN_BASE_URL;
     }
 
     return '';

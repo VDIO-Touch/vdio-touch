@@ -95,4 +95,10 @@ export interface EnvironmentVariables {
   BUNNY_CDN_API_KEY: string;
   BUNNY_CDN_API_BASE_URL: string;
   BUNNY_CDN_BASE_URL: string;
+
+  CLOUDFLARE_CDN_ZONE_ID: string;
+  CLOUDFLARE_CDN_API_TOKEN: string;
+  // Optional host only (no API version). Defaults to https://api.cloudflare.com
+  CLOUDFLARE_CDN_API_BASE_URL: string;
+  CLOUDFLARE_CDN_BASE_URL: string;
 }
