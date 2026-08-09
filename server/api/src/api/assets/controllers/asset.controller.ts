@@ -82,7 +82,8 @@ export class AssetController {
     }
 
     // re-triggering mid-run would delete rows whose transcription jobs are still executing
-    if (await this.transcriptGenerationService.hasRunInFlight(assetId)) {
+    let hasRunInFlight = await this.transcriptGenerationService.hasRunInFlight(assetId);
+    if (hasRunInFlight) {
       throw new ConflictException('Transcript generation is already in progress for this asset');
     }
 

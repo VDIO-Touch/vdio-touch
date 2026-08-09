@@ -22,9 +22,12 @@ export class TranscriptService {
       throw new Error('Not all partial transcript files are ready');
     }
 
-    if (!force && !(await this.claimMerge(transcriptFile))) {
-      console.log('merge already claimed for transcript file ', transcriptFile._id.toString());
-      return;
+    if (!force) {
+      let claimed = await this.claimMerge(transcriptFile);
+      if (!claimed) {
+        console.log('merge already claimed for transcript file ', transcriptFile._id.toString());
+        return;
+      }
     }
 
     // Sort files by name to ensure correct order (e.g., transcript_0.json, transcript_1.json, etc.)

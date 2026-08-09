@@ -341,7 +341,8 @@ export class FileService {
    * starts, so the guard is what stops the merge from re-creating the chunks and looping.
    */
   async createPartialTranscriptsFromChunks(assetId: string) {
-    if (await this.transcriptGenerationService.hasPartialTranscripts(assetId)) {
+    let hasPartialTranscripts = await this.transcriptGenerationService.hasPartialTranscripts(assetId);
+    if (hasPartialTranscripts) {
       console.log('partial transcripts already exist for asset, skipping chunk fan-out ', assetId);
       return;
     }
@@ -386,7 +387,8 @@ export class FileService {
     let assetId = asset._id.toString();
     // a redelivered audio-ready event would otherwise create a second transcript file, and with
     // it a second split job and a second set of chunks
-    if (await this.getTranscriptFile(assetId)) {
+    let existingTranscriptFile = await this.getTranscriptFile(assetId);
+    if (existingTranscriptFile) {
       console.log('transcript file already exists for asset, skipping creation ', assetId);
       return null;
     }
